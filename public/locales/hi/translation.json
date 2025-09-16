@@ -1,0 +1,22 @@
+{
+  "welcome": "करियर एडवाइजर में आपका स्वागत है",
+  "login": "लॉग इन करें",
+  "register": "रजिस्टर करें",
+  "name": "नाम",
+  "age": "आयु",
+  "gender": "लिंग",
+  "class": "कक्षा",
+  "location": "स्थान",
+  "preferences": "पसंद",
+  "submit": "सबमिट करें",
+  "quiz": "योग्यता और रुचि प्रश्नोत्तरी",
+  "recommendations": "सिफारिशें",
+  "colleges": "कॉलेज",
+  "careers": "करियर",
+  "parent_portal": "अभिभावक पोर्टल",
+  "logout": "लॉग आउट",
+  "science": "विज्ञान",
+  "arts": "कला",
+  "commerce": "वाणिज्य",
+  "dashboard": "डैशबोर्ड"
+}

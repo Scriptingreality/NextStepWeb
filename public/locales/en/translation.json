@@ -1,0 +1,22 @@
+{
+  "welcome": "Welcome to Career Advisor",
+  "login": "Login",
+  "register": "Register",
+  "name": "Name",
+  "age": "Age",
+  "gender": "Gender",
+  "class": "Class",
+  "location": "Location",
+  "preferences": "Preferences",
+  "submit": "Submit",
+  "quiz": "Aptitude & Interest Quiz",
+  "recommendations": "Recommendations",
+  "colleges": "Colleges",
+  "careers": "Careers",
+  "parent_portal": "Parent Portal",
+  "logout": "Logout",
+  "science": "Science",
+  "arts": "Arts",
+  "commerce": "Commerce",
+  "dashboard": "Dashboard"
+}
