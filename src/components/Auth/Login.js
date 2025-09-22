@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
 import { useTranslation } from 'react-i18next';
 
 function Login() {
@@ -14,6 +15,50 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      // Check for hardcoded admin credentials
+      const ADMIN_EMAIL = "admin@careeradvisor.com";
+      const ADMIN_PASSWORD = "admin123";
+      
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        // Create/login admin user
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+        } catch (authError) {
+          // If admin account doesn't exist, create it
+          if (authError.code === 'auth/user-not-found') {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            
+            // Set admin role in Firestore
+            await setDoc(doc(db, "users", user.uid), {
+              uid: user.uid,
+              name: "System Administrator",
+              email: email,
+              role: "admin",
+              createdAt: new Date(),
+            });
+          } else {
+            throw authError;
+          }
+        }
+        
+        // Ensure admin role is set in Firestore
+        const user = auth.currentUser;
+        if (user) {
+          await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            name: "System Administrator",
+            email: email,
+            role: "admin",
+            createdAt: new Date(),
+          }, { merge: true });
+        }
+        
+        navigate('/admin');
+        return;
+      }
+      
+      // Regular user login
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/'); // Redirect to dashboard after login
     } catch (error) {
@@ -22,8 +67,8 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-6">
+      <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             {t('login')}

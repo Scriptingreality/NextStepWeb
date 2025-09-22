@@ -1,6 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+import { getAnalytics } from "firebase/analytics";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA7K_wWp7C-YvosqksA4oykPb0Slr06J1E",
@@ -12,14 +15,46 @@ const firebaseConfig = {
   measurementId: "G-LKXTBE210R"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Initialize Firebase services
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
+const analytics = getAnalytics(app);
 
-export { auth, db };
-                                                                                       
+// Initialize Firebase Cloud Messaging
+let messaging = null;
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  messaging = getMessaging(app);
+}
 
+// Request notification permission and get FCM token
+export const requestNotificationPermission = async () => {
+  if (!messaging) return null;
+  
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      const token = await getToken(messaging, {
+        vapidKey: 'YOUR_VAPID_KEY' // Replace with your VAPID key
+      });
+      return token;
+    }
+  } catch (error) {
+    console.error('Error getting notification permission:', error);
+  }
+  return null;
+};
 
+// Listen for foreground messages
+export const onMessageListener = () =>
+  new Promise((resolve) => {
+    if (!messaging) return;
+    onMessage(messaging, (payload) => {
+      resolve(payload);
+    });
+  });
 
-// Initialize Firebase
-
+export { auth, db, storage, analytics, messaging };

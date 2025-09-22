@@ -80,105 +80,285 @@ function Profile() {
   };
 
   if (loading) {
-    return <div className="text-center py-10">Loading profile...</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your profile...</p>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center py-10 text-red-500">Error: {error}</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full mx-4">
+          <div className="text-center">
+            <div className="text-2xl mb-4 font-bold text-red-500">Error</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Error</h2>
+            <p className="text-red-500">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!userProfile) {
-    return <div className="text-center py-10">No profile data available. Please register.</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full mx-4">
+          <div className="text-center">
+            <div className="text-2xl mb-4 font-bold text-gray-500">No Profile</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">No Profile Found</h2>
+            <p className="text-gray-600">Please complete your registration to view your profile.</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md space-y-6">
-        <h2 className="text-center text-3xl font-extrabold text-gray-900">{t('profile')}</h2>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-6">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">My Profile</h1>
+          <p className="text-xl text-gray-600">Manage your personal information and preferences</p>
+        </div>
 
         {!isEditing ? (
-          <div>
-            <p><strong>{t('name')}:</strong> {userProfile.name}</p>
-            <p><strong>{t('age')}:</strong> {userProfile.age}</p>
-            <p><strong>{t('gender')}:</strong> {userProfile.gender}</p>
-            <p><strong>{t('class')}:</strong> {userProfile.class}</p>
-            <p><strong>{t('location')}:</strong> {userProfile.location}</p>
-            <p><strong>{t('preferences')}:</strong> {userProfile.preferences}</p>
-            <button
-              onClick={() => setIsEditing(true)}
-              className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Edit Profile
-            </button>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Profile Card */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center text-3xl font-bold text-indigo-600">
+                      {userProfile.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </div>
+                    <div className="text-white">
+                      <h2 className="text-2xl font-bold">{userProfile.name}</h2>
+                      <p className="text-indigo-100">Student • Class {userProfile.class}</p>
+                      <p className="text-indigo-100 text-sm">{userProfile.location}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Profile Details */}
+                <div className="p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm font-medium text-gray-500">Full Name</p>
+                        <p className="text-lg font-semibold text-gray-900">{userProfile.name}</p>
+                      </div>
+
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm font-medium text-gray-500">Age</p>
+                        <p className="text-lg font-semibold text-gray-900">{userProfile.age} years</p>
+                      </div>
+
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm font-medium text-gray-500">Gender</p>
+                        <p className="text-lg font-semibold text-gray-900 capitalize">{userProfile.gender}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm font-medium text-gray-500">Class</p>
+                        <p className="text-lg font-semibold text-gray-900">Class {userProfile.class}</p>
+                      </div>
+
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm font-medium text-gray-500">Location</p>
+                        <p className="text-lg font-semibold text-gray-900">{userProfile.location}</p>
+                      </div>
+
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm font-medium text-gray-500">Interests</p>
+                        <p className="text-lg font-semibold text-gray-900">{userProfile.preferences || 'Not specified'}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-gray-200">
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                    >
+                      Edit Profile
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Stats & Actions */}
+            <div className="space-y-6">
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Stats</h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Profile Completion</span>
+                    <span className="font-bold text-green-600">85%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-green-600 h-2 rounded-full" style={{width: '85%'}}></div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Quiz Status</span>
+                    <span className="font-bold text-blue-600">Completed</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Recommendations</span>
+                    <span className="font-bold text-purple-600">Available</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
+                <div className="space-y-3">
+                  <button className="w-full bg-blue-50 text-blue-700 py-3 px-4 rounded-lg hover:bg-blue-100 transition-colors text-left">
+                    Retake Quiz
+                  </button>
+                  <button className="w-full bg-green-50 text-green-700 py-3 px-4 rounded-lg hover:bg-green-100 transition-colors text-left">
+                    View Recommendations
+                  </button>
+                  <button className="w-full bg-purple-50 text-purple-700 py-3 px-4 rounded-lg hover:bg-purple-100 transition-colors text-left">
+                    Find Colleges
+                  </button>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Account Info</h3>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Email</span>
+                    <span className="font-medium">{auth.currentUser?.email}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Role</span>
+                    <span className="font-medium capitalize">{userProfile.role || 'Student'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Joined</span>
+                    <span className="font-medium">
+                      {userProfile.createdAt ? new Date(userProfile.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
-          <form className="space-y-4" onSubmit={handleUpdateProfile}>
-            <input
-              type="text"
-              required
-              className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder={t('name')}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <input
-              type="number"
-              required
-              className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder={t('age')}
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-            />
-            <select
-              required
-              className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
-            >
-              <option value="">{t('gender')}</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-            <select
-              required
-              className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              value={sClass}
-              onChange={(e) => setSClass(e.target.value)}
-            >
-              <option value="">{t('class')}</option>
-              <option value="10">10</option>
-              <option value="12">12</option>
-            </select>
-            <input
-              type="text"
-              required
-              className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder={t('location')}
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-            <input
-              type="text"
-              className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder={`${t('preferences')} (e.g., Science, Arts)`}
-              value={preferences}
-              onChange={(e) => setPreferences(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Save Changes
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="mt-2 w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Cancel
-            </button>
-          </form>
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Edit Profile</h2>
+              <p className="text-gray-600">Update your personal information</p>
+            </div>
+            
+            <form className="space-y-6" onSubmit={handleUpdateProfile}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    placeholder="Enter your full name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                  <input
+                    type="number"
+                    required
+                    min="10"
+                    max="25"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    placeholder="Enter your age"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                  <select
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                  >
+                    <option value="">Select your gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Class</label>
+                  <select
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    value={sClass}
+                    onChange={(e) => setSClass(e.target.value)}
+                  >
+                    <option value="">Select your class</option>
+                    <option value="10">Class 10</option>
+                    <option value="12">Class 12</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    placeholder="Enter your city/location"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Interests/Preferences</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    placeholder="e.g., Science, Arts, Technology"
+                    value={preferences}
+                    onChange={(e) => setPreferences(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="flex space-x-4 pt-6">
+                <button
+                  type="submit"
+                  className="flex-1 bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                >
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="flex-1 bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         )}
       </div>
     </div>

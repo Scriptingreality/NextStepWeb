@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -19,6 +19,7 @@ function Colleges() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCourse, setFilterCourse] = useState('');
   const [filterRegion, setFilterRegion] = useState('');
+  const mapRef = useRef(null);
 
   const filteredColleges = collegesData.filter(college => {
     const matchesSearchTerm = college.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -58,18 +59,35 @@ function Colleges() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {filteredColleges.map((college) => (
-            <div key={college.id} className="border p-4 rounded-lg shadow-sm">
+            <button
+              key={college.id}
+              onClick={() => {
+                if (mapRef.current) {
+                  mapRef.current.flyTo([college.location.latitude, college.location.longitude], 13, { duration: 1.2 });
+                }
+              }}
+              className="text-left border p-4 rounded-lg shadow-sm hover:shadow-md transition bg-white"
+            >
               <h3 className="text-xl font-bold mb-2">{college.name}</h3>
               <p className="text-gray-700"><strong>Location:</strong> {college.location.address}</p>
               <p className="text-gray-700"><strong>Courses:</strong> {college.courses.join(', ')}</p>
               <p className="text-gray-700"><strong>Eligibility:</strong> {college.eligibility}</p>
               <p className="text-gray-700"><strong>Facilities:</strong> {college.facilities.join(', ')}</p>
-            </div>
+              <a
+                href={`https://www.google.com/maps?q=${college.location.latitude},${college.location.longitude}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-block mt-3 text-indigo-600 hover:text-indigo-800 underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                View on Google Maps
+              </a>
+            </button>
           ))}
         </div>
 
         <div className="h-[500px] w-full rounded-lg shadow-md overflow-hidden">
-          <MapContainer center={[33.7782, 76.5762]} zoom={7} scrollWheelZoom={false} className="h-full w-full">
+          <MapContainer center={[33.7782, 76.5762]} zoom={7} scrollWheelZoom={false} className="h-full w-full" whenCreated={(map) => (mapRef.current = map)}>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

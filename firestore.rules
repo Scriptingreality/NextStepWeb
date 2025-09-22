@@ -1,33 +1,56 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can read and write their own profile data
+    // Users collection - users can read/write their own data, admins can read all
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
-
-    // Admins can read and write quiz questions (for future extensibility)
+    
+    // Quiz results - users can read/write their own results, admins can read all
+    match /quizResults/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Invites collection - students can create, anyone can read with valid code
+    match /invites/{inviteId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+    }
+    
+    // Admin-managed collections
+    match /quizQuestions/{document} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    match /colleges/{document} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    match /courses/{document} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Legacy collections for backward compatibility
     match /quizzes/{quizId} {
       allow read: if request.auth != null;
-      // allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
-
-    // Colleges and Degrees data are publicly readable
-    match /colleges/{collegeId} {
-      allow read: if true;
-    }
-
+    
     match /degrees/{degreeId} {
-      allow read: if true;
+      allow read: if request.auth != null;
     }
-
-    // Guardian portal access: Guardians can only read data if invited by a student
-    // This will require a more complex rule based on a 'guardians' collection or a field in the 'users' collection
-    // For MVP, we'll keep it simple, and implement invite logic in the application.
+    
     match /guardians/{guardianId} {
       allow read: if request.auth != null;
-      // In a real application, you'd add a check like:
-      // allow read: if exists(/databases/$(database)/documents/users/$(request.auth.uid)/invitedGuardians/$(guardianId));
     }
   }
 }
